@@ -4,7 +4,16 @@ import zipfile
 
 from core import constants as cst
 
+from PIL import Image
 
+def is_valid_image(path):
+    try:
+        with Image.open(path) as img:
+            w, h = img.size
+            return w > 0 and h > 0
+    except Exception:
+        return False
+        
 def prepare_dataset(
     training_images_zip_path: str,
     training_images_repeat: int,
@@ -13,6 +22,7 @@ def prepare_dataset(
     job_id: str,
     regularization_images_dir: str = None,
     regularization_images_repeat: int = None,
+    output_dir: str = None,
 ):
     extraction_dir = f"{cst.DIFFUSION_DATASET_DIR}/tmp/{job_id}/"
     os.makedirs(extraction_dir, exist_ok=True)
@@ -25,7 +35,26 @@ def prepare_dataset(
     else:
         training_images_dir = extraction_dir
 
-    output_dir = f"{cst.DIFFUSION_DATASET_DIR}/{job_id}/"
+    
+    bad_images = []
+
+    for root, _, files in os.walk(training_images_dir):
+        for f in files:
+            if f.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
+                full_path = os.path.join(root, f)
+                if not is_valid_image(full_path):
+                    bad_images.append(full_path)
+
+    # Remove or log invalid files
+    for path in bad_images:
+        print(f"Removing invalid image: {path}")
+        os.remove(path)
+
+
+    if output_dir is None:
+        output_dir = f"{cst.DIFFUSION_DATASET_DIR}/{job_id}/"
+    else:
+        output_dir = f"{output_dir}/{job_id}/"
     os.makedirs(output_dir, exist_ok=True)
 
     training_dir = os.path.join(
@@ -57,5 +86,5 @@ def prepare_dataset(
     if os.path.exists(extraction_dir):
         shutil.rmtree(extraction_dir)
 
-    if os.path.exists(training_images_zip_path):
+    if os.path.exists(training_images_zip_path) and "tourn" not in os.path.basename(training_images_zip_path):
         os.remove(training_images_zip_path)

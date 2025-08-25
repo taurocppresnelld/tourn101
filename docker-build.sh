@@ -1,1 +1,1 @@
-docker build --no-cache -f dockerfiles/standalone-text-trainer.dockerfile -t standalone-text-trainer:test .
+docker build -f dockerfiles/standalone-text-trainer.dockerfile -t standalone-text-trainer:test .

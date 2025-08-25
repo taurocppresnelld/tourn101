@@ -620,17 +620,17 @@ def main():
             # # break
 
 
-    # if not train_success:
-    #     print(f"Training failed for task {args.task_id}", flush=True)
-    #     # add noise to the model
-    #     add_noise_cmd = f"python add_random_noise.py {model_path} {submission_dir}"
-    #     run_cmd_with_log(
-    #         add_noise_cmd, os.path.join(ds_folder, f"add_noise_{args.task_id}.log")
-    #     )
+    if not train_success:
+        print(f"Training failed for task {args.task_id}", flush=True)
+        # add noise to the model
+        add_noise_cmd = f"python add_random_noise.py {model_path} {submission_dir}"
+        run_cmd_with_log(
+            add_noise_cmd, os.path.join(ds_folder, f"add_noise_{args.task_id}.log")
+        )
 
-    # # patch_model_metadata(submission_dir, args.model)
+    patch_model_metadata(submission_dir, args.model)
 
-    # patch_wandb_symlinks(train_cst.WANDB_LOGS_DIR)
+    patch_wandb_symlinks(train_cst.WANDB_LOGS_DIR)
 
 
 if __name__ == "__main__":
