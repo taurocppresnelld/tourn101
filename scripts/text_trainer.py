@@ -287,9 +287,10 @@ def main():
     output_dir = f"/workspace/scripts/soutputs/{args.task_id}"
     os.makedirs(output_dir, exist_ok=True)
 
+    x = 10
     end_time = datetime.now(timezone.utc) + timedelta(
-        hours=args.hours_to_complete - 3 / 60
-    )  # assume that 3 minutes to go this far
+        hours=args.hours_to_complete - x / 60
+    )  # assume that x minutes to go this far
     end_time = end_time.strftime("%Y-%m-%d %H:%M:%S")
     print("end_time: ", end_time, flush=True)
 
