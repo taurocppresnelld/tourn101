@@ -70,7 +70,7 @@ def stream_container_logs(container: Container):
 
 
 def build_docker_image(
-    dockerfile_path: str, context_path: str = ".", is_image_task: bool = False, tag: str = None, no_cache: bool = False
+    dockerfile_path: str, context_path: str = ".", is_image_task: bool = False, tag: str = None, no_cache: bool = True
 ) -> tuple[str, Exception | None]:
     client: docker.DockerClient = docker.from_env()
 

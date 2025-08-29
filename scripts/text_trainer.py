@@ -92,6 +92,15 @@ def extract_value_from_cmd(cmd: str, arg_name: str):
         return None
 
 
+def copy_dataset_to_axolotl_directories(dataset_path):
+    dataset_filename = os.path.basename(dataset_path)
+    data_path, root_path = train_paths.get_axolotl_dataset_paths(dataset_filename)
+    shutil.copy(dataset_path, data_path)
+    shutil.copy(dataset_path, root_path)
+
+    return data_path
+
+
 OOM_ERROR = "torch.OutOfMemoryError: CUDA out of memory"
 VLLM_OOM_ERROR = "ValueError: No available memory for the cache blocks"
 VAR_ONCE_ERROR = "RuntimeError: Expected to mark a variable ready only once"
@@ -278,6 +287,8 @@ def main():
 
     dataset_path = train_paths.get_text_dataset_path(args.task_id)
     
+    dataset_path = copy_dataset_to_axolotl_directories(dataset_path)
+
     submission_dir = train_paths.get_checkpoints_output_path(
         args.task_id, args.expected_repo_name
     )
